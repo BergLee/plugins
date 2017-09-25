@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.js"></script>
+    <script>
+        $(function(){
+            $.fn.district_picker=function(o){
+                var methods={
+                    init:function(){
+                            var country_data=[
+                                {district_id:1,district_name:'中国',district_level:1},
+                                {district_id:2,district_name:'美国',district_level:1},
+                                {district_id:3,district_name:'英国',district_level:1},
+                                {district_id:4,district_name:'法国',district_level:1}
+
+                            ];
+                            var province_data=[
+                                {district_id:5,district_name:'湖北省',district_level:2}
+
+                            ];
+                            var city_data=[
+                                {district_id:7,district_name:'武汉市',district_level:3},
+                                {district_id:8,district_name:'襄阳市',district_level:3},
+                                {district_id:9,district_name:'宜昌市',district_level:3}
+
+                            ];
+
+
+                            function regenerate(){
+                                $("body").find(".district-layer").remove();
+                                $("body").find(".country-picker").remove();
+                                var district_layer=$("<div class='district-layer'></div>").css({
+                                    "position":"fixed",
+                                    "left":"0px",
+                                    "right":"0px",
+                                    "top":"0px",
+                                    "bottom":"0px",
+                                    "background":"#000",
+                                    "opacity":"0.5",
+                                    "z-index":100
+                                }).hide();
+
+                                var country_picker_title=$("<div class='title'></div>").css({
+                                    "position":"absolute",
+                                    "width":"380px",
+                                    "height":"30px",
+                                    "line-height":"30px",
+                                    "text-indent":"10px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "text-overflow":"ellipsis",
+                                    "overflow":"hidden",
+                                }).text("标题");
+
+                                var country_picker_close=$("<span class='close'></span>").css({
+                                    "position":"absolute",
+                                    "width":"20px",
+                                    "display":"block",
+                                    "text-align":"center",
+                                    "height":"30px",
+                                    "right":"0px",
+                                    "line-height":"30px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "cursor":"pointer"
+                                }).html("&times").click(function(){
+                                    $(this).parents(".country-picker").hide();
+                                    $(".district-layer").hide();
+                                });
+
+                                var country_list=$("<ul class='country-list'></ul>").css({
+                                    "position":"absolute",
+                                    "left":"0px",
+                                    "right":"0px",
+                                    "top":"30px",
+                                    "bottom":"0px",
+                                    "display":"block",
+                                    "line-height":"30px",
+                                    "color":"#fff"
+                                });
+
+                                var country_picker=$("<div class='country-picker'></div>").css({
+                                    "position":"fixed",
+                                    "width":"400px",
+                                    "height":"300px",
+                                    "left":"50%",
+                                    "margin-left":"-200px",
+                                    "top":"50%",
+                                    "margin-top":"-150px",
+                                    "background":"lightblue",
+                                    "z-index":101
+                                }).append(country_picker_title).append(country_picker_close).append(country_list).hide();
+
+
+
+                                var province_picker_title=$("<div class='title'></div>").css({
+                                    "position":"absolute",
+                                    "width":"380px",
+                                    "height":"30px",
+                                    "line-height":"30px",
+                                    "text-indent":"10px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "text-overflow":"ellipsis",
+                                    "overflow":"hidden",
+                                }).text("标题");
+
+                                var province_picker_close=$("<span class='close'></span>").css({
+                                    "position":"absolute",
+                                    "width":"20px",
+                                    "display":"block",
+                                    "text-align":"center",
+                                    "height":"30px",
+                                    "right":"0px",
+                                    "line-height":"30px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "cursor":"pointer"
+                                }).html("&times").click(function(){
+                                    $(this).parents(".province-picker").hide();
+                                });
+
+                                var province_list=$("<ul class='province-list'></ul>").css({
+                                    "position":"absolute",
+                                    "left":"0px",
+                                    "right":"0px",
+                                    "top":"30px",
+                                    "bottom":"0px",
+                                    "display":"block",
+                                    "line-height":"30px",
+                                    "color":"#fff"
+                                });
+
+                                var province_picker=$("<div class='province-picker'></div>").css({
+                                    "position":"absolute",
+                                    "width":"400px",
+                                    "height":"300px",
+                                    "left":"50px",
+                                    "top":"50px",
+                                    "background":"lightgreen",
+                                    "z-index":102
+                                }).append(province_picker_title).append(province_picker_close).append(province_list).hide();
+
+
+
+
+                                var city_picker_title=$("<div class='title'></div>").css({
+                                    "position":"absolute",
+                                    "width":"380px",
+                                    "height":"30px",
+                                    "line-height":"30px",
+                                    "text-indent":"10px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "text-overflow":"ellipsis",
+                                    "overflow":"hidden",
+                                }).text("标题");
+
+                                var city_picker_close=$("<span class='close'></span>").css({
+                                    "position":"absolute",
+                                    "width":"20px",
+                                    "display":"block",
+                                    "text-align":"center",
+                                    "height":"30px",
+                                    "right":"0px",
+                                    "line-height":"30px",
+                                    "background":"lightseagreen",
+                                    "color":"#fff",
+                                    "cursor":"pointer"
+                                }).html("&times").click(function(){
+                                    $(this).parents(".city-picker").hide();
+                                });
+
+                                var city_list=$("<ul class='city-list'></ul>").css({
+                                    "position":"absolute",
+                                    "left":"0px",
+                                    "right":"0px",
+                                    "top":"30px",
+                                    "bottom":"0px",
+                                    "display":"block",
+                                    "line-height":"30px",
+                                    "color":"#fff"
+                                });
+
+                                var city_all=$("<button>全选</button>").click(function(){
+                                        $(this).toggleClass("all");
+                                        $(".city-list :checkbox").prop("checked",$(".city-list :checkbox").size()>$(".city-list :checked").size());
+                                });
+                                var city_ensure=$("<button class='ensure'>确定</button>").click(function(){
+                                    methods.getData(o);
+                                });
+                                var city_cancel=$("<button class='ensure'>取消</button>").click(function(){
+                                    $(this).parents(".city-picker").hide();
+                                });
+
+                                var city_bottom=$("<div></div>").css({
+                                    "position":"absolute",
+                                    "bottom":"0px",
+                                    "height":"30px",
+                                    "left":"0px",
+                                    "right":"0px",
+                                    "text-align":"center"
+                                }).append(city_all).append(city_ensure).append(city_cancel);
+
+                                var city_picker=$("<div class='city-picker'></div>").css({
+                                    "position":"absolute",
+                                    "width":"400px",
+                                    "height":"300px",
+                                    "left":"50px",
+                                    "top":"50px",
+                                    "background":"lightpink",
+                                    "z-index":103
+                                }).append(city_picker_title).append(city_picker_close).append(city_list).append(city_bottom).hide();
+
+                                $("body").append(district_layer);
+                                $("body").append(country_picker.append(province_picker.append(city_picker)));
+                                $(".country-list").delegate("li","click",function(){
+                                    $(this).addClass("active").siblings("li").removeClass("active");
+                                    province_data.forEach(function(row){
+                                        var li=$("<li data-id='"+row.district_id+"'>"+row.district_name+"</li>").css({
+                                            "display":"inline-block",
+                                            "list-style":"none",
+                                            "margin-left":"10px"
+                                        });
+                                        $(".province-list").append(li);
+                                    });
+                                    $(".province-picker").show();
+                                });
+
+                                $(".province-list").delegate("li","click",function(){
+                                    $(this).addClass("active").siblings("li").removeClass("active");
+                                    city_data.forEach(function(row){
+                                        var li=$("<li data-id='"+row.district_id+"'><label><input  type='checkbox'>"+row.district_name+"</label></li>").css({
+                                            "display":"inline-block",
+                                            "list-style":"none",
+                                            "margin-left":"10px"
+                                        });
+                                        $(".city-list").append(li);
+                                    });
+
+                                    $(".city-picker").show();
+                                });
+
+                                $(".city-list").delegate("li","click",function(){
+                                    $(this).addClass("active").siblings("li").removeClass("active");
+                                });
+
+                                country_data.forEach(function(row){
+                                    var li=$("<li data-id='"+row.district_id+"'>"+row.district_name+"</li>").css({
+                                        "display":"inline-block",
+                                        "list-style":"none",
+                                        "margin-left":"10px"
+                                    });
+                                    $(".country-list").append(li);
+                                });
+                                $(".district-layer").show();
+                                $(".country-picker").show();
+
+                            }
+
+                            $(this).click(function(){
+                                regenerate();
+                            });
+                    },
+                    getData:function(o){
+                        var result=[];
+                        var country={
+                            id:$(".country-list li.active").data("id"),
+                            name:$(".country-list li.active").text()
+                        };
+                        var province={
+                            id:$(".province-list li.active").data("id"),
+                            name:$(".province-list li.active").text(),
+                        };
+                        $(".city-list :checked").each(function(){
+                            var city={
+                                id:$(this).parents("li").data("id"),
+                                name:$(this).parents("li").text()
+                            };
+                            result.push({
+                                country:country,
+                                province:province,
+                                city:city
+                            });
+                        });
+                        return o(result);
+                    }
+                };
+
+                if(typeof o=="function"){
+                    return methods.init.apply(this,arguments);
+                }else{
+                    $.error("error");
+                }
+            }
+            $("#a").district_picker(function(res){
+                    alert(res);
+            });
+            $("#b").district_picker(function(res){
+                    alert(res);
+            });
+        });
+    </script>
+</head>
+<body>
+<button id="a">xxx</button>
+<button id="b">yyy</button>
+</body>
+</html>
