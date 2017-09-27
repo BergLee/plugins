@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+<p></p>
+<div id="grid1"></div>
+<p></p>
+<div id="grid2"></div>
+</body>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+(function($){
+	$.fn.grid=function(o){
+		var defults={
+			rownumber:true,
+			checkable:true,
+			singleSelect:true,
+			url:null,
+			pager:{
+				enable:true,
+				config:{
+					page:1,
+					size:10,
+					total:0
+				}
+			},
+			fields:null,
+			data:null
+		};
+		var methods={
+			init:function(options){
+				var config=$.extend({},defults,options || {});
+				this.data('config',config);
+				methods.loadData.call(this);
+				return this;
+			},
+			loadData:function(params){
+				var el=this;
+				el.data('config').pager.config.total=this.data('config').data.length;
+				var start=(el.data('config').pager.config.page-1)*el.data('config').pager.config.size;
+				var end=start+el.data('config').pager.config.size;
+				var data=el.data('config').data.slice(start,end);
+				el.html("");
+				var table=$("<table border='1'></table>");
+				var thead=$("<thead></thead>");
+				var tbody=$("<tbody></tbody>");
+				var tfoot=$("<tfoot></tfoot>");
+				if(el.data('config').rownumber) thead.append("<th width='50'>#</th>");
+				if(el.data('config').checkable){
+					var th=$("<th width='50'></th>");
+					var checkall=$("<input class='checkall' type='checkbox' />").click(function(){
+						if($(this).prop("checked")==true){
+							methods.checkAll.call(el);
+						}else{
+							methods.unCheckAll.call(el);
+						}
+					});
+					th.append(checkall);
+					thead.append(th);
+				};
+				el.data('config').fields.forEach(function(field){
+					var th=$("<th></th>").attr({align:field.align,width:field.width}).text(field.title);
+					thead.append(th);
+				});
+
+				data.forEach(function(row,index){
+					var tr=$("<tr></tr>").data('row',row).click(function(){
+						$(this).toggleClass("selected");
+						if(el.data('config').singleSelect){
+							$(this).siblings('tr').removeClass("selected");
+						}
+					});
+					if(el.data('config').rownumber) tr.append("<td width='50' align='center'>"+index+"</td>");
+					if(el.data('config').checkable){
+						var td=$("<td width='50' align='center'></td>");
+						var checkrow=$("<input type='checkbox' />").click(function(){
+								el.find(".checkall").prop("checked",methods.getChecked.call(el).length==methods.getRows.call(el).length);
+						});
+						td.append(checkrow);
+						 tr.append(td);
+					}
+					el.data('config').fields.forEach(function(field){
+						var td=$("<td></td>").attr({align:field.align,width:field.width}).text(row[field.field]);
+						tr.append(td);
+					});
+					tbody.append(tr);
+				});
+				var tr=$("<tr align='right'></tr>");
+				var td=$("<td></td>").attr({colspan:el.data('config').fields.length+(el.data('config').rownumber?1:0)+(el.data('config').checkable?1:0)});
+				var pagerPrev=$("<a class='pager-prev'>上一页</a>")
+				.css({display:el.data('config').pager.config.page>1?'inline':'none'})
+				.click(function(){
+					if(el.data('config').pager.config.page>1) el.data('config').pager.config.page--;
+					methods.loadData.call(el);
+				});
+				var pagerNext=$("<a class='pager-next'>下一页</a>")
+				.css({display:el.data('config').pager.config.page<Math.ceil(el.data('config').pager.config.total/el.data('config').pager.config.size)?'inline':'none'})
+				.click(function(){
+					if(el.data('config').pager.config.page<Math.ceil(el.data('config').pager.config.total/el.data('config').pager.config.size)) el.data('config').pager.config.page++;
+					methods.loadData.call(el);
+				});
+				var pagerInfo=$("<a class='pager-info'></a>").text(el.data('config').pager.config.page+"/"+Math.ceil(el.data('config').pager.config.total/el.data('config').pager.config.size)+"页 "+el.data('config').pager.config.total+"条 ");
+				td.append(pagerPrev);
+				td.append(pagerNext);
+				td.append(pagerInfo);
+				tr.append(td);
+				tfoot.append(tr);
+
+				table.append(thead);
+				table.append(tbody);
+				table.append(tfoot);
+				el.append(table);
+			},
+			getRows:function(){
+				var data=[];
+				this.find("tbody").find("tr").each(function(){
+					data.push($(this).data("row"));
+				});
+				return data;
+			},
+			getSelected:function(){
+				var data=[];
+				this.find("tbody").find(".selected").each(function(){
+					data.push($(this).data("row"));
+				});
+				return data;
+			},
+			getChecked:function(){
+				var data=[];
+				this.find("tbody").find(":checked").parents("tr").each(function(){
+					data.push($(this).data("row"));
+				});
+				return data;				
+			},
+			selectRow:function(index){
+				this.find("tbody").find("tr").eq(index).addClass("selected");
+			},
+			selectAll:function(){
+				this.find("tbody").find("tr").addClass("selected");
+			},
+			checkRow:function(index){
+				this.find("tbody").find(":checkbox").eq(index).prop("checked",true);
+			},
+			checkAll:function(){
+				this.find("tbody").find(":checkbox").prop("checked",true);
+			},
+			unCheckAll:function(){
+				this.find("tbody").find(":checkbox").prop("checked",false);
+			},
+			deleteRow:function(index){
+				this.find("tbody").find("tr").eq(index).remove();	
+			}
+		};
+
+
+		if(methods[o]){
+			return methods[o].apply(this,Array.prototype.slice.call(arguments,1));
+		}else if(typeof o==="object" || !o){
+			return methods.init.apply(this,arguments);
+		}else{
+			return $.error('unknow method');
+		}
+	}
+})(jQuery);
+$("#grid1").grid({
+			pager:{
+				enable:true,
+				config:{
+					page:1,
+					size:1,
+					total:0
+				}
+			},
+			fields:[
+				{title:'X',field:'x',width:150,align:'center'},
+				{title:'Y',field:'y',width:150,align:'center'},
+				{title:'Z',field:'z',width:150,align:'center'}
+			],
+			data:[
+				{x:1,y:2,z:3},
+				{x:2,y:3,z:4},
+				{x:3,y:4,z:5}
+			]
+});
+$("#grid2").grid({
+			pager:{
+				enable:true,
+				config:{
+					page:1,
+					size:2,
+					total:0
+				}
+			},
+			fields:[
+				{title:'X',field:'x',width:150,align:'center'},
+				{title:'Y',field:'y',width:150,align:'center'},
+				{title:'Z',field:'z',width:150,align:'center'}
+			],
+			data:[
+				{x:1,y:2,z:3},
+				{x:2,y:3,z:4},
+				{x:3,y:4,z:5},
+				{x:4,y:5,z:6},
+				{x:5,y:6,z:7},
+				{x:6,y:7,z:8},
+			]
+});
+</script>
+</html>
+
+
+<style type="text/css">
+	table{
+		border:cadetblue 1px solid;
+		border-collapse: collapse;
+		line-height: 50px;
+	}
+	thead{
+		background: cadetblue;
+		color:#fff;
+	}
+	a{
+		font-size: 12px;
+		color:cadetblue;
+		margin:5px;
+		cursor: pointer;
+	}
+	tr.selected{
+		background: lightgray;
+	}
+</style>
