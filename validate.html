@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title></title>
+</head>
+<body>
+<form class="form">
+	<div class="field">
+		<label class="field-label width-4em text-right">用户名：</label>
+		<input class="field-body valid" data-validType="required" type="" name="">
+		<p class="field-error"></p>
+	</div>
+	<div class="field">
+		<label class="field-label width-4em text-right">密码：</label>
+		<input class="field-body valid" data-validType="number" type="" name="">
+		<p class="field-error"></p>
+	</div>
+	<button class="left-4em" type="submit">submit</button>
+</form>
+<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	.field{
+		margin:10px 0px;
+	}
+	.text-right{
+		text-align: right;
+	}
+	.field-label{
+		float: left;
+	}
+	.field-error{
+		clear: both;
+	}
+	.width-4em {
+		width: 4rem;
+	}
+	.left-4em{
+		margin-left: 4rem;
+	}
+</style>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+	$.fn.validate=function(a,b){
+		var form=$(this);
+
+		var config={
+
+		};
+
+		var validators={
+			required:{
+				rule:"",
+				msg:"required"
+			},
+			string:{
+				rule:"",
+				msg:"must string"
+			},
+			number:{
+				rule:/^[+]?[1-9]\d*$/,
+				msg:"invalid email"
+			}
+		};
+
+		var methods={
+			init:function(c){
+				form.find(".valid").each(function(i){
+					watch(form,$(this));
+				});
+				form.submit(function(){
+					$(this).data("submitting",true);
+					validate($(this));
+					if($(this).data("submitting")){
+						return true;
+					}
+					return false;
+				});
+			}
+		};
+
+
+		var watch=function(form,attr){
+			attr.change(function(){
+				validAttr(form,attr);
+			});
+			attr.blur(function(){
+				validAttr(form,attr);
+			});
+			attr.focus(function(){
+				$(this).next("p").html("");
+			});
+		}
+
+		var validate=function(form){
+			form.find(".valid").each(function(i){
+				validAttr(form,$(this));
+			});
+		}
+
+		var validAttr=function(form,attr){
+			var validType=attr.data("validtype");
+			if(validType=="required"){
+				if(attr.val()==""){
+					form.data("submitting",false);
+					attr.next("p").text(validators[validType].msg);
+				}
+			}
+
+			if(validType=="number"){
+				var validType=attr.data("validtype");
+				if(!validators[validType].rule.test(attr.val())){
+					form.data("submitting",false);
+					var validType=attr.data("validtype");
+					attr.next("p").text(validators[validType].msg);
+				}
+			}
+
+		}
+
+		if(typeof a=="undefined" || typeof a=="object"){
+			Object.assign(config,a);
+			methods['init']();
+		}
+
+		if(typeof a=="string"){
+			methods[a](b);
+		}
+	};
+	$(".form").validate();
+</script>
+</body>
+</html>
