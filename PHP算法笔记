@@ -1,0 +1,27 @@
+<?php 
+
+$data=[
+	["苹果","华为"],
+	["白色","黑色","蓝色","红色"],
+	["移动","联通","电信"],
+	["3G","4G"]
+];
+
+function d($data){
+	$tmp=$data[0];
+	for($a=1;$a<count($data);$a++){
+			$tmp_t=[];
+			foreach ($tmp as $k => $v) {
+				for($b=0;$b<count($data[$a]);$b++){
+					$tmp_t[]=$v."-".$data[$a][$b];
+				}
+			}
+			$tmp=$tmp_t;
+	}
+	return $tmp;
+}
+
+echo "<pre>";
+print_r(d($data));
+
+?>
