@@ -31,3 +31,5 @@ RewriteRule ^(.*)$ web/index.php/$1 [QSA]
         return dirname($this->_baseUrl);
     }
 ```
+### PHP进程间通信
+http://www.jianshu.com/p/08bcf724196b
