@@ -6,7 +6,7 @@
 autoHeightEnabled:false
 ```
 
-##yii2框架去掉Url中的web
+## yii2框架去掉Url中的web
 
 ### web同级目录的.htaccess:
 ```
