@@ -28,6 +28,7 @@ RewriteRule ^(.*)$ web/index.php/$1 [QSA]
             $this->_baseUrl = rtrim(dirname($this->getScriptUrl()), '\\/');
         }
 
+        //return $this->_baseUrl;
         return dirname($this->_baseUrl);
     }
 ```
