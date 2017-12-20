@@ -8,7 +8,7 @@ autoHeightEnabled:false
 
 ## yii2框架去掉Url中的web
 
-### web同级目录的.htaccess:
+1 web同级目录的.htaccess:
 ```
 Options +FollowSymLinks
 IndexIgnore */*
@@ -19,7 +19,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ web/index.php/$1 [QSA]
 ```
-### `\yii\web\Request`修改:
+2 `\yii\web\Request`修改:
 ```php
     public function getBaseUrl()
     {
