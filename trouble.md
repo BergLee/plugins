@@ -7,7 +7,8 @@ ueditor在选项卡切换过程中无法控制高度问题
 autoHeightEnabled:false
 ```
 
-yii2框架去掉Url中的web:
+yii2框架去掉Url中的web
+---
 + web同级目录的.htaccess:
 ```
 Options +FollowSymLinks
