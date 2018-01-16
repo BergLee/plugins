@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>日历插件demo</title>
+	<script src="http://10.134.100.101/fjj_erp/web/assets/48d927b7/jquery.js"></script>
+</head>
+<body>
+	<div id="x"></div>
+	<script type="text/javascript">
+		$.fn.calendar=function(){
+			var width=this.width() || this.parent.width();
+			var table=$("<table border='1'></table>").css("border-collapse","collapse").css("text-align","center");
+
+			var tr=$("<tr></tr>");
+			$("<td colspan='7' align='center'>2018</td>").appendTo(tr);
+			tr.appendTo(table);
+			var tr=$("<tr></tr>");
+			$("<td>周日</td>").appendTo(tr);
+			$("<td>周一</td>").appendTo(tr);
+			$("<td>周二</td>").appendTo(tr);
+			$("<td>周三</td>").appendTo(tr);
+			$("<td>周四</td>").appendTo(tr);
+			$("<td>周五</td>").appendTo(tr);
+			$("<td>周六</td>").appendTo(tr);
+			tr.appendTo(table);
+
+			var year=(new Date()).getFullYear();
+			var month=(new Date()).getMonth();
+			var date=(new Date()).getDate();
+			var day=(new Date()).getDay();
+
+			var d1=(new Date(year,month,0)).getDate();
+			var d2=(new Date(year,month+1,0)).getDate();
+			var w2=(new Date(year+"-"+(month+1)+"-"+1)).getDay();
+			var d3=(new Date(year,month+2,0)).getDate();
+			var count=Math.ceil((day+d2)/7)*7;
+			for(var m=0;m<count;m++){
+				if(m%7==0){
+					var tr=$("<tr></tr>");
+				}
+				if(m<w2){
+					$("<td></td>").css("color","#999").text(d1--).prependTo(tr);
+				}
+
+				if(m>=w2 && m<(w2+d2)){
+					var td=$("<td></td>").text(m-w2+1);
+					if(date+w2==m+1){
+						td.css("color","#fff").css("background","lightseagreen");
+					}
+					td.appendTo(tr);	
+				}
+
+				if(m>=(w2+d2)){
+					$("<td></td>").css("color","#999").text(m-(w2+d2)+1).appendTo(tr);
+				}
+				if(m%7==0){
+					tr.appendTo(table);
+				}
+			}
+			table.appendTo(this);
+		}
+		$("#x").calendar();
+	</script>
+</body>
+</html>
