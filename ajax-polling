@@ -1,0 +1,14 @@
+<script>
+    (function x(){
+        $.ajax({
+            url:"data.php",
+            type:"get",
+            async:true,
+            dataType:"json",
+            success:function(data){
+                console.log(data);
+                x();
+            }
+        });
+    })();
+</script>
