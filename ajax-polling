@@ -1,3 +1,5 @@
+#ajax长轮询
+
 <script>
     (function x(){
         $.ajax({
@@ -12,3 +14,40 @@
         });
     })();
 </script>
+
+#服务器发送时间
+
+## 前端js
+
+<script>
+    var source = new EventSource('data.php');
+    source.onmessage = function(e){
+        console.log(e.data);
+    };
+</script>
+
+## 服务端数据
+
+        header("Content-Type:text/event-stream");
+        header("Cache-Control:no-cache");
+        header("Access-Control-Allow-Origin:*");
+        $str=json_encode([
+            [
+                "id"=>"1",
+                "name"=>"task_1",
+                "progress"=>rand(0,100)
+            ],
+            [
+                "id"=>"2",
+                "name"=>"task_2",
+                "progress"=>rand(0,100)
+            ],
+            [
+                "id"=>"3",
+                "name"=>"task_3",
+                "progress"=>rand(0,100)
+            ],
+        ]);
+        echo "id:1\n\n";
+        echo "data:{$str}\n\n";
+        flush();
